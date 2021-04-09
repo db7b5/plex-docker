@@ -1,0 +1,39 @@
+version: "2"
+
+services:
+  plex:
+    image: plexinc/pms-docker   
+    networks:
+      - plexnet
+    ports:
+      - "32400:32400"
+      - "3005:3005"
+      - "8324:8324"
+      - "32469:32469"
+      - "1900:1900"
+      - "32410:32410"
+      - "32412:32412"
+      - "32413:32413"
+      - "32414:32414"   
+
+    volumes:
+      - config_data:/config
+      - trans_data:/transcode
+      - c:/users/dboehm/videos/:/data
+    restart: unless-stopped  
+
+  dizquetv:   
+    image: vexorian/dizquetv:latest    
+    networks:
+      - plexnet
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./.dizquetv:/home/node/app/.dizquetv
+    restart: unless-stopped
+
+networks:
+  plexnet:
+volumes:
+  config_data:
+  trans_data:    
