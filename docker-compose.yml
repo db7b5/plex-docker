@@ -1,8 +1,9 @@
 version: "2"
 
 services:
-  plex:
-    image: plexinc/pms-docker:latest   
+  plex_main:
+    image: plexinc/pms-docker:latest 
+    restart: unless-stopped  
     networks:
       - plexnet
     ports:
@@ -19,26 +20,45 @@ services:
       - PUID=1000
       - PGID=1000
       - VERSION=docker
-      - HOSTNAME=
-      - ADVERTISE_IP=
+      - HOSTNAME=plextest1
+      - ADVERTISE_IP=http://10.7.0.52:32400/
     volumes:
-      - config_data:/config
+      - config_data_p1:/config
       - trans_data:/transcode
       - c:/users/dboehm/videos/:/data
+  
+  plex_dizquetv:
+    image: plexinc/pms-docker:latest 
     restart: unless-stopped  
-
-  dizquetv:   
-    image: vexorian/dizquetv:latest    
     networks:
       - plexnet
     ports:
-      - "8000:8000"
+      - "32401:32400"      
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - VERSION=docker
+      - HOSTNAME=plextest2
+      - ADVERTISE_IP=http://10.7.0.52:32401/
+    volumes:
+      - config_data_p2:/config
+      - trans_data:/transcode
+      - c:/users/dboehm/videos/:/data
+
+  dizquetv:   
+    image: vexorian/dizquetv:latest   
+    restart: unless-stopped 
+    networks:
+      - plexnet
+    ports:
+      - "8001:8000"
     volumes:
       - ./.dizquetv:/home/node/app/.dizquetv
-    restart: unless-stopped
+    
 
 networks:
   plexnet:
 volumes:
-  config_data:
+  config_data_p1:
+  config_data_p2:
   trans_data:    
